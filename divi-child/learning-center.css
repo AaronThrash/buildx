@@ -1,0 +1,574 @@
+/* ===============================
+   BuildX Learning Center styles
+   =============================== */
+:root{
+  --lr-bg: #f7f8fb;
+  --lr-card: #fff;
+  --lr-text: #111;
+  --lr-muted: #6b7280;
+  --lr-border: #e5e7eb;
+  --lr-shadow: 0 6px 20px rgba(0,0,0,.06);
+
+  --lr-accent: #111;       /* primary button / focus ring */
+  --lr-topic: #e8f2ff;     /* badges per taxonomy */
+  --lr-format: #eefcf6;
+  --lr-audience: #f5ecff;
+  --lr-level: #fff4e6;
+}
+
+/* Layout helpers (works whether you place shortcodes in two Divi columns or not) */
+#lr-filters { background: var(--lr-card); border: 1px solid var(--lr-border); border-radius: 14px; padding: 18px; box-shadow: var(--lr-shadow); }
+@media (min-width: 980px){
+  #lr-filters { position: sticky; top: 24px; }
+}
+
+/* Form blocks */
+#lr-filters .lr-label { display:block; font-weight:600; color:var(--lr-text); margin-bottom:6px; }
+#lr-filters .lr-search input[type="search"]{
+  width:100%; padding:10px 12px; border:1px solid var(--lr-border); border-radius:10px; outline: none;
+}
+#lr-filters .lr-search input[type="search"]:focus{ border-color:#cbd5e1; box-shadow: 0 0 0 3px rgba(0,0,0,.05); }
+
+#lr-filters .lr-fieldset{ border:0; padding:0; margin:16px 0 8px; }
+#lr-filters .lr-fieldset legend{ font-weight:700; font-size:14px; color:#374151; margin-bottom:8px; }
+#lr-filters .lr-list{ margin:0; padding:0; list-style:none; display:grid; grid-template-columns: 1fr; gap:8px; }
+#lr-filters .lr-list label{ display:flex; align-items:center; gap:10px; cursor:pointer; padding:6px 8px; border-radius:10px; transition: background .15s ease; }
+#lr-filters .lr-list label:hover{ background:#f3f4f6; }
+/* Checkbox tile — rounded square with centered white dot when checked */
+#lr-filters input[type="checkbox"]{
+  --size: 18px;
+  appearance: none;
+  width: var(--size);
+  height: var(--size);
+  border: 1.5px solid #9ca3af;
+  border-radius: 6px;           /* rounded corners */
+  background: #fff;
+  display: grid;
+  place-items: center;          /* centers the dot perfectly */
+  transition: background .15s, border-color .15s, box-shadow .15s;
+}
+
+#lr-filters input[type="checkbox"]:hover{
+  border-color: #6b7280;
+}
+
+#lr-filters input[type="checkbox"]:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(17,17,17,.15); /* subtle focus ring */
+}
+
+#lr-filters input[type="checkbox"]:checked{
+  background: #111;             /* black tile */
+  border-color: #111;
+}
+
+#lr-filters input[type="checkbox"]:checked::after{
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;         /* white circle */
+  background: #000;
+  /* neutralize previous checkmark styling if any */
+  border: 0;
+  transform: none;
+  margin: 0;
+}
+
+
+/* Hide Apply when JS is active (we add .js in JS) */
+.js #lr-filters .lr-actions .lr-btn[type="submit"]{ display:none; }
+
+/* Grid */
+#lr-grid{ display:grid; grid-template-columns: repeat(1, minmax(0,1fr)); gap:20px; }
+@media (min-width: 700px){ #lr-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (min-width: 1100px){ #lr-grid{ grid-template-columns: repeat(3, minmax(0,1fr)); } }
+
+/* Cards */
+.lr-card{ background:var(--lr-card); border:1px solid var(--lr-border); border-radius:16px; overflow:hidden; box-shadow: var(--lr-shadow); transition: transform .15s, box-shadow .15s; }
+.lr-card:hover{ transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,.08); }
+.lr-thumb{ display:block; background:linear-gradient(180deg,#edf2f7, #f8fafc); aspect-ratio: 16 / 10; overflow:hidden; }
+.lr-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+.lr-card-body{ padding:16px; }
+.lr-title{ font-size:20px; line-height:1.5; margin:8px 0 8px; font-weight:700; }
+.lr-title a{ font-weight:inherit; color:inherit; text-decoration:none; }
+.lr-title a:hover{ text-decoration:underline; }
+.lr-excerpt{ color:var(--lr-muted); font-size:14px; line-height:1.55; margin:0; }
+
+/* Badges */
+.lr-badges{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; }
+.lr-badge{ display:inline-block; padding:4px 8px; border-radius:999px; font-size:12px; font-weight:600; color:#374151; border:1px solid var(--lr-border); background:#f9fafb; }
+.lr-badge--cat{ background:#eef2ff; color:#3730a3; border-color:#e0e7ff; }
+.lr-badge--topic{ background:var(--lr-topic); color:#1d4ed8; border-color:#dbeafe; }
+.lr-badge--format_type{ background:var(--lr-format); color:#047857; border-color:#d1fae5; }
+.lr-badge--audience{ background:var(--lr-audience); color:#6b21a8; border-color:#ede9fe; }
+.lr-badge--level{ background:var(--lr-level); color:#9a3412; border-color:#ffedd5; }
+
+/* Pagination (WordPress paginate_links outputs <ul class="page-numbers"> or <ul>) */
+.lr-pagination{ display:flex; justify-content:center; margin-top:8px; }
+.lr-pagination ul{ display:flex; gap:8px; list-style:none; padding:0; margin:0; }
+.lr-pagination a,
+.lr-pagination span{ display:inline-block; padding:8px 12px; border:1px solid var(--lr-border); border-radius:10px; background:#fff; color:#111; text-decoration:none; font-weight:600; }
+.lr-pagination .current{ background:#111; color:#fff; border-color:#111; }
+
+/* Loading state */
+#lr-grid.is-loading{ position:relative; }
+#lr-grid.is-loading::after{
+  content:""; position:absolute; inset:0; background:
+    linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.7) 50%, rgba(255,255,255,0) 100%);
+  animation: lr-shimmer 1.2s infinite; pointer-events:none;
+}
+@keyframes lr-shimmer { from{ transform:translateX(-100%);} to{ transform:translateX(100%);} }
+
+/* Small tweaks inside Divi columns */
+.et_pb_module #lr-filters { margin-bottom:20px; }
+
+/* Shotcode 2-Column Layout */
+.lr-wrap{ display:grid; grid-template-columns: 280px 1fr; gap:24px; }
+@media (max-width: 979px){ .lr-wrap{ grid-template-columns: 1fr; } }
+
+/* Two-column shell for filters + grid (independent of Divi columns) */
+.lr-wrap{
+  display:grid;
+  grid-template-columns: 280px 1fr;
+  gap:24px;
+  align-items:start;
+}
+@media (max-width: 980px){
+  .lr-wrap{ grid-template-columns: 1fr; }
+}
+
+/* If your Divi row/columns are adding their own card-like styling, strip it inside lr-wrap */
+.lr-wrap .et_pb_column{
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+
+/* Mobile layout: grid first, filters after */
+@media (max-width: 980px){
+  .lr-wrap{ grid-template-columns: 1fr; }
+  #lr-grid{ order: 1; }
+  #lr-filters{ order: 2; margin-top: 12px; }
+}
+
+/* Mobile Filters drawer */
+@media (min-width: 981px){ .lr-mobile-toggle{ display:none; } }
+
+@media (max-width: 980px){
+  .lr-mobile-toggle{
+    position: sticky; top: 0; width: 100%;
+    padding: 12px 14px; margin: 0 0 12px;
+    background: #fff; color:#111; font-weight:700;
+    border: 1px solid var(--lr-border); border-radius: 10px;
+    box-shadow: var(--lr-shadow); z-index: 5;
+  }
+
+  #lr-filters{
+    position: fixed; inset: 0; z-index: 1000;
+    background: #fff; overflow-y: auto;
+    padding: 18px; transform: translateY(100%);
+    transition: transform .25s ease;
+  }
+  #lr-filters.is-open{ transform: translateY(0); }
+
+  #lr-filters .lr-close{
+    position: sticky; top: 0; width: 100%;
+    background:#111; color:#fff; border:0; border-radius:10px;
+    padding:10px 12px; margin-bottom:10px; font-weight:700;
+  }
+
+  html.lr-no-scroll, body.lr-no-scroll{ overflow: hidden; }
+}
+
+/* Sidebar box to match filters */
+.lr-box{
+  background:#fff; border:1px solid var(--lr-border); border-radius:14px;
+  box-shadow: var(--lr-shadow); padding:16px; margin:0 0 20px;
+}
+.lr-box-head{ font-weight:800; font-size:16px; margin:2px 4px 10px; color:#111; }
+
+/* Post list */
+.lr-postlist{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+.lr-postlist-item{ display:flex; align-items:center; gap:8px; }
+.lr-postlink{
+  display:block; flex:1; text-decoration:none; border-radius:10px; padding:8px 10px;
+  border:1px solid transparent; transition:background .15s, border-color .15s;
+}
+.lr-postlink:hover{ background:#f8fafc; border-color:var(--lr-border); }
+.lr-posttitle{ color:#111; font-weight:600; line-height:1.3; font-size:14.5px; }
+
+/* Optional: keep the box from growing too tall */
+.lr-postlist-wrap{ max-height:70vh; overflow:auto; }
+
+/* Badge uses your existing lr-badge palette */
+.lr-badge{ margin-left:auto; }
+
+/* Stable spacing for chips/badges in the grid */
+#lr-grid .lr-badge{
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  margin: 0;                 /* reset */
+}
+
+/* Add a single, explicit gap only when a badge follows a badge */
+#lr-grid .lr-badge + .lr-badge{
+  margin-left: 6px;          /* tweak: 4–8px as you prefer */
+}
+
+/* Media wrapper on cards */
+.lr-media{ position: relative; border-radius: 20px; overflow: hidden; }
+.lr-media .lr-img{ display:block; width:100%; height:auto; }
+
+/* Play button */
+.lr-play{
+  position:absolute; right:12px; bottom:12px;
+  width:52px; height:52px; border-radius:50%;
+  background:rgba(0,0,0,.6); border:0; cursor:pointer;
+  display:grid; place-items:center; transition:transform .15s, background .15s;
+}
+.lr-play::before{
+  content:""; width:0; height:0; margin-left:2px;
+  border-left:16px solid #fff;
+  border-top:10px solid transparent; border-bottom:10px solid transparent;
+}
+.lr-play:hover{ transform:scale(1.07); background:rgba(0,0,0,.75); }
+
+/* Lightbox modal */
+.lr-modal{ position:fixed; inset:0; z-index:10000; }
+.lr-modal[hidden]{ display:none; }
+.lr-modal__backdrop{ position:absolute; inset:0; background:rgba(0,0,0,.6); }
+.lr-modal__dialog{
+  position:relative; margin:5vh auto; width:min(92%, 960px);
+  background:#000; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+.lr-modal__player{ aspect-ratio:16/9; }
+.lr-modal__player iframe{ width:100%; height:100%; border:0; display:block; }
+.lr-modal__close{
+  position:absolute; top:6px; right:6px;
+  background:#111; color:#fff; border:0; border-radius:8px; padding:6px 10px;
+}
+html.lr-no-scroll, body.lr-no-scroll{ overflow:hidden; }
+
+/* Media wrapper & stacking */
+.lr-media{ position: relative; border-radius: 20px; overflow: hidden; }
+
+.lr-thumb{
+  position: relative;
+  z-index: 1;           /* BELOW the play button */
+  display: block;
+}
+
+.lr-play{
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 1002;        /* ABOVE the image/link */
+}
+
+/* ===== Video lightbox layout ===== */
+
+/* If your sticky header height changes, tweak this once */
+:root { --lr-header-offset: 72px; }  /* ~ the BuildX sticky header height */
+
+/* Modal container */
+.lr-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;         /* vertical center */
+  justify-content: center;     /* horizontal center */
+  z-index: 100000;             /* above Divi header */
+  padding: calc(var(--lr-header-offset) + 24px) 16px 24px; /* avoid header overlap */
+}
+
+.lr-modal[hidden] { display: none !important; }
+
+/* Dimmed backdrop */
+.lr-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.65);
+}
+
+/* Dialog that holds the player */
+.lr-modal__dialog {
+  position: relative;
+  background: #000;
+  border-radius: 14px;
+  box-shadow: 0 30px 80px rgba(0,0,0,.55);
+  overflow: hidden;
+
+  /* Keep 16:9 and fit within viewport (accounting for header padding) */
+  aspect-ratio: 16 / 9;
+  width: min(92vw, 1200px);
+  max-height: calc(100vh - var(--lr-header-offset) - 48px);
+}
+
+/* The iframe fills the dialog */
+.lr-modal__player iframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 0;
+}
+
+/* Close button */
+.lr-modal__close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 36px; height: 36px;
+  border: 0; border-radius: 999px;
+  background: rgba(255,255,255,.14);
+  color: #fff; font-size: 22px; line-height: 36px;
+  cursor: pointer;
+  z-index: 2;
+}
+.lr-modal__close:hover { background: rgba(255,255,255,.22); }
+
+/* Mobile tweaks */
+@media (max-width: 640px){
+  :root { --lr-header-offset: 64px; }
+  .lr-modal__dialog{ border-radius: 10px; width: 96vw; }
+}
+
+@media (max-width: 480px){
+  .lr-related, .lr-rel-box { display: none !important; }
+}
+
+/* Keep Learning Center pager at the bottom of the grid */
+#lr-grid .lr-pagination{
+  display:flex;               /* center the buttons neatly */
+  justify-content:center;
+  grid-column: 1 / -1;        /* if grid layout is used, span all columns */
+  margin-top: 1.5rem;         /* breathing room from the last card */
+}
+
+/* A11y: visually-hidden live region for pagination status */
+.sr-only{
+  position:absolute !important;
+  width:1px !important;
+  height:1px !important;
+  padding:0 !important;
+  margin:-1px !important;
+  overflow:hidden !important;
+  clip:rect(0,0,0,0) !important;
+  white-space:nowrap !important;
+  border:0 !important;
+}
+
+/* Popular 3 Card ADU Plans strip */
+.bx-popular-adu-wrap{
+  margin:60px auto;
+  max-width:1920px;
+}
+.bx-popular-adu-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  margin-bottom:20px;
+}
+.bx-popular-adu-heading{
+  margin:0;
+  font-size:32px;
+  font-weight:700;
+}
+.bx-popular-adu-seeall{
+  padding:10px 22px;
+  border-radius:30px;
+  background:#feb81c;
+  color:#000;
+  border:1px solid transparent;
+  font-size:14px;
+  text-decoration:none;
+  white-space:nowrap;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  transition:all .2s ease;
+}
+.bx-popular-adu-seeall:hover{
+  background:#fff;
+  color:#000;
+  border-color:#000;
+}
+/* Stack Heading Text + Button on Mobile Screens */
+@media (max-width:980px){
+  .bx-popular-adu-header {
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
+  }
+  .bx-popular-adu-heading{
+    font-size:28px;
+    line-height:1.2;
+  }
+  .bx-popular-adu-seeall{
+    align-self:flex-start;
+  }
+}
+.bx-popular-adu-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:24px;
+}
+.bx-popular-adu-card{
+  background:#fff;
+  border-radius:18px;
+  box-shadow:0 10px 25px rgba(0,0,0,.08);
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+.bx-popular-adu-image{display:block;}
+.bx-popular-adu-thumb{
+  width:100%;
+  height:auto;
+  display:block;
+}
+.bx-popular-adu-body{
+  padding:16px 18px 18px;
+}
+.bx-popular-adu-title{
+  margin:0 0 6px;
+  font-size:18px;
+  font-weight:700;
+}
+.bx-popular-adu-title a{
+  text-decoration:none;
+  color:inherit;
+}
+.bx-popular-adu-meta{
+  font-size:14px;
+  color:#555;
+}
+.bx-popular-adu-badges{
+  margin:0 0 8px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+
+.bx-fp-badge{
+  display:inline-flex;
+  align-items:center;
+  padding:5px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:500;
+  color:#222;
+  background:rgba(0,0,0,.04);
+  box-shadow:none;
+}
+
+
+/* Softer, ADU Floor Plan-style palette */
+.bx-fp-badge--beds{
+  background:#e2f7eb;   /* soft green */
+  color:#1f7a3a;
+}
+.bx-fp-badge--baths{
+  background:#f0e8ff;   /* soft purple */
+  color:#6a4fb4;
+}
+.bx-fp-badge--sqft{
+  background:#e3f2ff;   /* soft blue */
+  color:#326ba8;
+}
+.bx-fp-badge--extra{
+  background:#fff4da;   /* soft yellow */
+  color:#b37a00;
+}
+
+
+
+.bx-popular-adu-actions{
+  margin-top:24px;
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
+}
+.bx-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:12px 26px;
+  border-radius:30px;
+  font-weight:700;
+  font-size:14px;
+  text-decoration:none;
+  background:#feb81c;
+  color:#000;
+  border:1px solid transparent;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+.bx-btn-primary,
+.bx-btn-secondary{
+  background:#feb81c;
+  color:#000;
+  border-color:transparent;
+}
+.bx-btn:hover,
+.bx-btn-primary:hover,
+.bx-btn-secondary:hover{
+  background:#fff;
+  color:#000;
+  border-color:#000;
+}
+
+@media (max-width:980px){
+  .bx-popular-adu-grid{grid-template-columns:1fr;}
+}
+
+/* Mobile-only vertical stack for "vertical-mobile" layout */
+@media (max-width:980px){
+  .bx-popular-adu-wrap.bx-layout--vertical-mobile .bx-popular-adu-grid{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+  }
+}
+
+/* -----------------------------------------------------------------
+ * Base Horizontal Grid (Current Layout - Stays as Default)
+ * ----------------------------------------------------------------- */
+.bx-popular-adu-wrap.bx-layout--horizontal .bx-popular-adu-grid {
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px; /* Adjust gap to match current design */
+}
+/* Ensure cards are centered in the horizontal grid */
+.bx-popular-adu-wrap.bx-layout--horizontal .bx-popular-adu-card {
+    /* Styles for horizontal cards */
+}
+
+
+/* -----------------------------------------------------------------
+ * Vertical Layout Overrides (For Posts/Sidebars)
+ * ----------------------------------------------------------------- */
+.bx-popular-adu-wrap.bx-layout--vertical {
+    /* Constrain width if this is in a narrow sidebar */
+    max-width: 500px; 
+}
+
+.bx-popular-adu-wrap.bx-layout--vertical .bx-popular-adu-grid {
+    /* Disable the grid layout and switch to vertical flow */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Vertical spacing between cards */
+}
+
+.bx-popular-adu-wrap.bx-layout--vertical .bx-popular-adu-card {
+    /* Cards take full available width, stacked vertically */
+    width: 100%;
+    margin-bottom: 0; 
+}
+
+/* Optional: Shrink text/image size for a narrow vertical list (e.g., sidebar) */
+.bx-popular-adu-wrap.bx-layout--vertical .bx-popular-adu-thumb {
+    /* Example: adjust max-height or width if needed for narrow view */
+}

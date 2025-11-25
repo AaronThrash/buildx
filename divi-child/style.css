@@ -1,0 +1,37 @@
+/*
+Theme Name: Divi Child
+Theme URI: https://diviextended.com/
+Version: 1.0
+Description: Child Theme of Divi
+Author: Divi Extended
+Template: Divi
+*/
+
+/* 1. Import Parent Styles FIRST */
+@import url("../Divi/style.css");
+
+/* 2. Vertical Layout Overrides */
+.bx-popular-adu-wrap.bx-layout--vertical {
+    /* Constrain width if this is in a narrow sidebar */
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.bx-popular-adu-wrap.bx-layout--vertical .bx-popular-adu-grid {
+    /* Disable the grid layout and switch to vertical flow */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.bx-popular-adu-wrap.bx-layout--vertical .bx-popular-adu-card {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.bx-popular-adu-wrap.bx-layout--vertical .bx-popular-adu-thumb {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+}
