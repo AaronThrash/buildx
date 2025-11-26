@@ -1,6 +1,12 @@
 <?php
+// Prevent direct access to this file.
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 // BuildX Learning Center – 4 core taxonomies
 add_action('init', function () {
+
 
   // Do not cache the Learning Center page
 add_action('template_redirect', function () {
