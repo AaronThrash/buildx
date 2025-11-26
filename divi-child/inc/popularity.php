@@ -255,20 +255,34 @@ if ( ! function_exists('buildx_pop_today') ) {
     }
   });
 
-  /* ---------- Track CLICKS (AJAX beacon from LC JS) ---------- */
+    /* ---------- Track CLICKS (AJAX beacon from LC JS) ---------- */
   add_action('wp_ajax_buildx_pop_click',    'buildx_pop_ajax_click');
   add_action('wp_ajax_nopriv_buildx_pop_click', 'buildx_pop_ajax_click');
   function buildx_pop_ajax_click(){
-    $pid = isset($_POST['post_id']) ? absint($_POST['post_id']) : 0;
-    if ($pid){
-      $is_lc = buildx_pop_is_lc($pid);
-      // If beacon arrives from LC grid, it’ll be LC; if not, no-op (keeps ADU clean)
-      if ($is_lc) buildx_pop_bump($pid, true, 'c');
+    // Security: verify nonce from the request. The JS must send a "nonce" field.
+    check_ajax_referer( 'buildx_pop_click', 'nonce' );
+
+    // Sanitize and normalize the post ID coming from $_POST.
+    $pid = isset( $_POST['post_id'] )
+      ? absint( wp_unslash( $_POST['post_id'] ) )
+      : 0;
+
+    if ( ! $pid ) {
+      wp_send_json_error( array( 'ok' => false ), 400 );
     }
-    wp_send_json_success();
+
+    $is_lc = buildx_pop_is_lc( $pid );
+
+    // If beacon arrives from LC grid, it’ll be LC; if not, no-op (keeps ADU clean)
+    if ( $is_lc ) {
+      buildx_pop_bump( $pid, true, 'c' );
+    }
+
+    wp_send_json_success( array( 'ok' => true ) );
   }
 
   /* ---------- Recompute (batch) ---------- */
+
   function buildx_pop_query_all_lc(){
     return new WP_Query([
       'posts_per_page' => -1,
