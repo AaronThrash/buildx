@@ -1,5 +1,11 @@
 <?php
+// Prevent direct access to this file.
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 // Popularity Engines for ADU Floor Plans and Learning Center.
+
 
 /* -----------------------------------------------------------
  * Floor Plans: Popularity Engine (views + clicks, rolling 7 days)
