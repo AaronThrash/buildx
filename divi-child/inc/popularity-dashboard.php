@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 /**
  * BuildX Popularity Analytics (admin-only dashboard)
  * - Aggregates _bx_lc_hist / _bx_adu_hist
@@ -257,4 +260,5 @@ add_action( 'admin_enqueue_scripts', function( $hook ) {
     '1.0',
     true
   );
+
 } );
