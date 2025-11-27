@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 // BuildX Learning Center – core taxonomies, query, and rendering logic.
 
 add_action('init', function () {
@@ -513,5 +516,6 @@ add_shortcode('lr_post_list', function ($atts) {
   <?php
   return trim(ob_get_clean());
 });
+
 
 // (no PHP close tags in functions; safe on all PHP 7+)
