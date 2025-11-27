@@ -8,10 +8,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * - Tools → Popularity Analytics
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-  exit;
-}
-
 // Require popularity core to be loaded first.
 if ( ! function_exists( 'buildx_pop_today' ) ) {
   // Popularity module not present; do not register dashboard.
@@ -262,3 +258,4 @@ add_action( 'admin_enqueue_scripts', function( $hook ) {
   );
 
 } );
+
