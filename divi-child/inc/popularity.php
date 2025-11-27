@@ -2,11 +2,6 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-// Prevent direct access to this file.
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
-
 // Popularity Engines for ADU Floor Plans and Learning Center.
 
 
@@ -401,4 +396,5 @@ if ( ! function_exists('buildx_pop_today') ) {
 
 
 // (no PHP close tags in functions; safe on all PHP 7+)
+
 
