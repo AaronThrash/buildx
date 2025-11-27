@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 // Floor Plans: taxonomies, shortcodes, and endpoint.
 
 add_action('init', function () {
@@ -420,6 +423,7 @@ function buildx_popular_adu_plans_shortcode( $atts = [] ) {
   return trim( ob_get_clean() );
 }
 add_shortcode( 'buildx_popular_adu_plans', 'buildx_popular_adu_plans_shortcode' );
+
 
 
 // (no PHP close tags in functions; safe on all PHP 7+)
