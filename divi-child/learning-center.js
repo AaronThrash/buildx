@@ -9,8 +9,8 @@
     return params.toString();
   }
 
-    // Update URL without reloading the page
-  function updateURL(params) {
+      // Update URL without reloading the page
+  function updateURL(params, mode = "replace") {
     const url = new URL(window.location.href);
 
     // Normalize path: strip trailing "/page/{n}/" so everything
@@ -20,8 +20,13 @@
     // Apply updated query string (?paged=…, filters, etc.)
     url.search = params;
 
-    window.history.replaceState({}, "", url.toString());
+    if (mode === "push") {
+      window.history.pushState({ params }, "", url.toString());
+    } else {
+      window.history.replaceState({ params }, "", url.toString());
+    }
   }
+
 
     async function run(params) {
     // Always re-acquire the grid (the old node may have been replaced)
@@ -166,20 +171,25 @@
       merged.delete("page"); // keep canonical param
 
       const out = merged.toString();
-      updateURL(out);
+      updateURL(out, "push");
       run(out);
     });
 
 
   }
 
+  // When the user hits Back/Forward, re-run the query based on the URL.
+  window.addEventListener("popstate", () => {
+    const search = window.location.search.slice(1); // strip "?"
+    // Empty string means "no filters, page 1" – backend handles that.
+    run(search);
+  });
 
-
-document.addEventListener('DOMContentLoaded', () => {
-// Delay 'wire' slightly. This resolves timing conflicts where the form might exist
-// but is not fully visible/ready for listeners to attach.
-setTimeout(wire, 50);
-});
+  document.addEventListener("DOMContentLoaded", () => {
+    // Delay 'wire' slightly. This resolves timing conflicts where the form might exist
+    // but is not fully visible/ready for listeners to attach.
+    setTimeout(wire, 50);
+  });
 
 
 })();
