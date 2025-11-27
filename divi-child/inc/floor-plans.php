@@ -252,7 +252,7 @@ function buildx_popular_adu_plans_shortcode( $atts = [] ) {
   // ADU_CPT is defined in popularity.php, which is required_once before this module in functions.php
   if ( ! defined('ADU_CPT') ) define('ADU_CPT', 'post');
   
-  $atts = shortcode_atts([
+    $atts = shortcode_atts([
     'limit'               => 3,
     'title'               => 'Our Most Popular ADU Plans',
     'see_all_url'         => 'https://buildx.com/adu-floor-plans/',
@@ -265,17 +265,29 @@ function buildx_popular_adu_plans_shortcode( $atts = [] ) {
     
   ], $atts, 'buildx_popular_adu_plans' );
 
+  // How many cards to actually show (default 3, never less than 1)
+  $display_limit = intval( $atts['limit'] );
+  if ( $display_limit <= 0 ) {
+    $display_limit = 3;
+  }
+
+  // How many posts to pull into the pool (we want some extra so we can randomize)
+  // Minimum 3; if display_limit is 3, pull at least 8 so the 3rd card can rotate.
+  $pool_limit = max( $display_limit, ( $display_limit === 3 ? 8 : 3 ) );
+
   // Base query limited to Floor Plans category
   $floor_cat = get_category_by_slug('floor-plans');
+
   $cat_in    = $floor_cat ? [ $floor_cat->term_id ] : [];
 
-  $base_args = [
+    $base_args = [
     'post_type'      => ADU_CPT,
     'post_status'    => 'publish',
-    'posts_per_page' => intval($atts['limit']),
+    'posts_per_page' => $pool_limit,
     'no_found_rows'  => true,
     'category__in'   => $cat_in,
   ];
+
 
   // Popularity-first query
   $args = $base_args;
@@ -296,12 +308,52 @@ function buildx_popular_adu_plans_shortcode( $atts = [] ) {
     $q = new WP_Query($args);
   }
 
-  if ( ! $q->have_posts() ) {
+    if ( ! $q->have_posts() ) {
     return '';
   }
 
+  // Build the pool of posts and then select cards:
+  //   - First card: top 1 by score
+  //   - Second card: top 2 by score (if available)
+  //   - Remaining needed cards: random from the rest of the pool
+  $selected_posts = [];
+  $all_posts      = $q->posts; // array of WP_Post objects
+
+  if ( ! empty( $all_posts ) ) {
+    // Always take the first (most popular)
+    $selected_posts[] = $all_posts[0];
+
+    // Second card: next most popular, if available and we should show at least 2
+    if ( $display_limit >= 2 && isset( $all_posts[1] ) ) {
+      $selected_posts[] = $all_posts[1];
+    }
+
+    // If we still need more cards and have a remaining pool, pick them at random
+    if ( $display_limit > count( $selected_posts ) && count( $all_posts ) > 2 ) {
+      $pool   = array_slice( $all_posts, 2 ); // everything after top 2
+      $needed = $display_limit - count( $selected_posts );
+
+      if ( $needed >= count( $pool ) ) {
+        // Not many in the pool – just append them all.
+        $selected_posts = array_merge( $selected_posts, $pool );
+      } else {
+        $rand_keys = array_rand( $pool, $needed );
+        if ( ! is_array( $rand_keys ) ) {
+          $rand_keys = [ $rand_keys ];
+        }
+        foreach ( $rand_keys as $rk ) {
+          $selected_posts[] = $pool[ $rk ];
+        }
+      }
+    }
+  }
+
+  // Enforce the display limit in case anything above overshot
+  $selected_posts = array_slice( $selected_posts, 0, $display_limit );
+
   // Choose layout class based on shortcode attribute (default: horizontal)
   $layout = isset($atts['layout']) ? strtolower(trim($atts['layout'])) : 'horizontal';
+
 
   switch ($layout) {
     case 'vertical':
@@ -327,9 +379,13 @@ function buildx_popular_adu_plans_shortcode( $atts = [] ) {
       <?php endif; ?>
     </div>
 
-    <div class="bx-popular-adu-grid">
-      <?php while ( $q->have_posts() ) : $q->the_post();
+        <div class="bx-popular-adu-grid">
+      <?php
+      global $post;
+      foreach ( $selected_posts as $post ) :
+        setup_postdata( $post );
         $pid = get_the_ID();
+
 
         // Collect plan taxonomies for badge row (match Floor Plans layout)
         $bed_terms   = get_the_terms($pid, 'plan_bedrooms');
@@ -401,8 +457,9 @@ function buildx_popular_adu_plans_shortcode( $atts = [] ) {
         </article>
 
 
-      <?php endwhile; wp_reset_postdata(); ?>
+            <?php endforeach; wp_reset_postdata(); ?>
     </div>
+
 
     <div class="bx-popular-adu-actions">
       <?php if ( ! empty($atts['primary_cta_url']) ) : ?>
@@ -423,7 +480,6 @@ function buildx_popular_adu_plans_shortcode( $atts = [] ) {
   return trim( ob_get_clean() );
 }
 add_shortcode( 'buildx_popular_adu_plans', 'buildx_popular_adu_plans_shortcode' );
-
 
 
 // (no PHP close tags in functions; safe on all PHP 7+)
