@@ -279,30 +279,47 @@ if ( ! function_exists( 'buildx_adu_catalogue_shortcode' ) ) {
 		#bx-adu-catalogue.bx-adu-catalogue {
 			max-width: 1100px;
 			margin: 0 auto;
-		}
+		    /* New: Turn on Flexbox column layout */
+            display: flex;
+            flex-direction: column;
+            /* New: Set height to fill the viewport, minus header/padding.
+            Adjust '140px' if your site header is taller/shorter. */
+            height: calc(100vh - 140px);
+            min-height: 600px; /* Prevents crushing on extremely short screens */
+        }
 		.bx-adu-visual {
-			text-align: center;
-			margin-bottom: 1.5rem;
+            text-align: center;
+            /* New: Make this section grow to fill available space */
+    		flex-grow: 1;
+    		display: flex;
+    		flex-direction: column;
+    		overflow: hidden; /* Required for the image to shrink properly */
+    		margin-bottom: 1rem;
 		}
-
 		.bx-adu-image-wrap {
-			position: relative;
-			padding-top: 60%;
-			border-radius: 12px;
-			border: 1px solid #e5e7eb;
-			overflow: hidden;
-			background: #f9fafb;
+    		position: relative;
+    		/* REMOVED: padding-top: 60%;  <-- This was causing the overflow */
+    		/* New: Make the wrapper flexible */
+    		flex-grow: 1;
+    		flex-shrink: 1;
+    		flex-basis: 0; /* Important flex trick for proper sizing */
+    		min-height: 200px; /* Ensure image area doesn't disappear completely */
+    		border-radius: 12px;
+    		border: 1px solid #e5e7eb;
+    		overflow: hidden;
+    		background: #f9fafb;
 		}
 		#bx-plan-image {
-			position: absolute;
-			inset: 0;
-			width: 100%;
-			height: 100%;
-			object-fit: contain;
-			opacity: 0;
-			transform: scale(1.02);
-			transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
-			cursor: zoom-in;
+    		position: absolute;
+    		inset: 0;
+    		width: 100%;
+    		height: 100%;
+    		/* 'contain' ensures the whole image is always seen without cropping */
+    		object-fit: contain;
+    		opacity: 0;
+    		transform: scale(1.02);
+    		transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+    		cursor: zoom-in;
 		}
         /* Thumbnail Styles */
 		.bx-adu-catalog-thumbs {
@@ -321,6 +338,10 @@ if ( ! function_exists( 'buildx_adu_catalogue_shortcode' ) ) {
 			cursor: pointer;
 			background: #f3f4f6;
 			transition: all 0.2s ease;
+		}
+		.bx-adu-catalog-thumbs,
+		.bx-adu-meta {
+    		flex-shrink: 0;
 		}
 		.bx-adu-thumb:hover {
 			border-color: #fbbf24; /* Yellow highlight on hover */
@@ -368,13 +389,15 @@ if ( ! function_exists( 'buildx_adu_catalogue_shortcode' ) ) {
 			font-size: 0.95rem;
 		}
 		.bx-adu-controls-row {
-			display: flex;
-			flex-wrap: wrap;
-			gap: 1rem;
-			justify-content: center;
-			padding: 1rem;
-			border-radius: 12px;
-			background: #f3f4f6;
+    		/* New: Prevent controls from shrinking */
+    		flex-shrink: 0;
+    		display: flex;
+    		flex-wrap: wrap;
+    		gap: 1rem;
+    		justify-content: center;
+    		padding: 1rem;
+    		border-radius: 12px;
+    		background: #f3f4f6;
 		}
 		.bx-adu-control {
 			min-width: 150px;
@@ -406,52 +429,107 @@ if ( ! function_exists( 'buildx_adu_catalogue_shortcode' ) ) {
 		}
 
 		/* Lightbox overlay */
-				.bx-adu-lightbox {
-			position: fixed;
-			inset: 0;
-			background: rgba(0, 0, 0, 0.8);
-			display: none;
-			align-items: center;
-			justify-content: center;
-			z-index: 9999;
-			padding: 24px;
-			box-sizing: border-box;
-			overflow: auto;
-		}
-		.bx-adu-lightbox.is-open {
-			display: flex;
-		}
-		.bx-adu-lightbox-inner {
-			position: relative;
-			margin: 0 auto;
-			max-width: min(96vw, 1600px);
-			max-height: calc(100vh - 80px);
-		}
-		.bx-adu-lightbox-img {
-			display: block;
-			max-width: 100%;
-			max-height: 100%;
-			width: auto;
-			height: auto;
-			margin: 0 auto;
-			border-radius: 12px;
-			background: #fff;
-		}
+		
+.bx-adu-lightbox {
+    /* Critical: formatting to make it float on top */
+    position: fixed;
+    inset: 0;
+    z-index: 99999; /* High number ensures it sits on top of header/footer */
+    background: rgba(0, 0, 0, 0.85);
+    
+    /* Flexbox centering */
+    display: none;
+    align-items: center;
+    justify-content: center;
+    
+    /* Ensure padding so image doesn't touch edges */
+    padding: 20px;
+    box-sizing: border-box;
+}
 
-		.bx-adu-lightbox-close {
-			position: absolute;
-			top: -12px;
-			right: -12px;
-			width: 32px;
-			height: 32px;
-			border-radius: 999px;
-			border: none;
-			cursor: pointer;
-			font-size: 20px;
-			line-height: 1;
-			background: #fbbf24;
-			color: #111827;
-		}
+/* This class is added by JS when you click the image */
+.bx-adu-lightbox.is-open {
+    display: flex;
+}
+
+.bx-adu-lightbox-inner {
+    position: relative;
+    /* sizing logic */
+    max-width: 100%;
+    max-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bx-adu-lightbox-img {
+    display: block;
+    /* Constrain image to viewport size */
+    max-width: 100%;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    object-fit: contain;
+}
+
+.bx-adu-lightbox-close {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    cursor: pointer;
+    font-size: 24px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fbbf24; /* Your brand yellow */
+    color: #111827;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    z-index: 100000;
+}
+/* --- MOBILE OPTIMIZATION --- */
+@media (max-width: 980px) {
+    /* 1. Turn off the "One Screen" height constraint */
+    #bx-adu-catalogue.bx-adu-catalogue {
+        height: auto !important; /* Let the page grow tall again */
+        min-height: 0;
+        display: block; /* Stop flex-column layout */
+    }
+
+    /* 2. Let the visual section take up its natural space */
+    .bx-adu-visual {
+        height: auto;
+        margin-bottom: 2rem;
+    }
+
+    /* 3. Restore the Aspect Ratio for the image on mobile */
+    .bx-adu-image-wrap {
+        flex-grow: 0;
+        min-height: 0;
+        /* This makes the image box a nice rectangle (3:2 ratio) on mobile */
+        padding-top: 66%; 
+        width: 100%;
+    }
+
+    /* 4. Formatting for the controls row on mobile */
+    .bx-adu-controls-row {
+        align-items: stretch;
+        /* Ensure it sits at the bottom of the flow, not sticky */
+        flex-shrink: 1; 
+    }
+    
+    .bx-adu-control {
+        flex: 1 1 45%;
+    }
+}
 		</style>
 
 
