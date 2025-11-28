@@ -18,6 +18,8 @@ require_once get_stylesheet_directory() . '/inc/security.php';
 require_once get_stylesheet_directory() . '/inc/seo.php';
 require_once get_stylesheet_directory() . '/inc/video.php';
 require_once get_stylesheet_directory() . '/inc/popularity.php';
+require_once get_stylesheet_directory() . '/inc/thumbnails.php';
+require_once get_stylesheet_directory() . '/inc/catalogue.php';
 require_once get_stylesheet_directory() . '/inc/learning-center.php';
 require_once get_stylesheet_directory() . '/inc/floor-plans.php';
 require_once get_stylesheet_directory() . '/inc/popularity-dashboard.php';
